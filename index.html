@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Бекон ТВ — ПРЯМОЙ ЭФИР</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .tv-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .tv-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 2;
+        }
+
+        /* ЛОГОТИП */
+        .tv-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 8px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 3;
+        }
+
+        .tv-logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .tv-logo-text {
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* LIVE ПЛАШКА */
+        .tv-live-badge {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background-color: #ff0000;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 3;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+
+        /* ЧАСЫ (над бегущей строкой) */
+        .tv-clocks {
+            position: absolute;
+            bottom: 60px; /* Чуть выше, чтобы не перекрывать строку */
+            left: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 3;
+            font-weight: bold;
+            border-left: 4px solid #ff0000;
+        }
+
+        .clock-item {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .clock-item span {
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* БЕГУЩАЯ СТРОКА */
+        .news-ticker {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            z-index: 4;
+            overflow: hidden;
+            border-top: 2px solid #ff0000;
+        }
+
+        .ticker-title {
+            background: #ff0000;
+            color: #fff;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 5;
+            text-transform: uppercase;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            color: #fff;
+            font-size: 20px;
+            padding-left: 100%;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tv-container">
+        <video id="tv-player" autoplay muted playsinline></video>
+        <div class="tv-overlay"></div>
+
+        <div class="tv-logo">
+            <img src="tv-logo.jpg" alt="Лого">
+            <div class="tv-logo-text">Roblox Бекон ТВ</div>
+        </div>
+
+        <div class="tv-live-badge">LIVE</div>
+
+        <div class="tv-clocks">
+            <div class="clock-item">МСК: <span id="msk-time">00:00:00</span></div>
+            <div class="clock-item">СМР: <span id="samara-time">00:00:00</span></div>
+        </div>
+
+        <!-- Бегущая строка-->
+        <div class="news-ticker">
+            <div class="ticker-title">СРОЧНЫЕ НОВОСТИ</div>
+            <div class="ticker-wrap">
+                <div class="ticker-move">
+                    🔥 Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • • 🛡️ БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • • 🤖 НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • • 🚀 ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • • 🥓 БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const playlist = [
+            { url: "pervayseriaigrakalmara.mp4", duration: 1652 },
+            { url: "vladysminecraftchelovekaban.mp4", duration: 450 }, 
+            { url: "otbegnogobomghadobogatiiroblox.mp4", duration: 1055 },
+            { url: "robloxsquidgame3funnymomentsskysquid1.mp4", duration: 650 }, 
+        ];
+
+        const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
+        const player = document.getElementById('tv-player');
+
+        function updateClocks() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('msk-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Moscow' }).format(now);
+            document.getElementById('samara-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Samara' }).format(now);
+        }
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        function syncTV() {
+            if (playlist.length === 0) return;
+            const currentUnixTime = Math.floor(Date.now() / 1000);
+            let currentPlaylistOffset = currentUnixTime % totalDuration;
+            let videoIndex = 0;
+            let videoTimeOffset = 0;
+
+            for (let i = 0; i < playlist.length; i) {
+                if (currentPlaylistOffset < playlist[i].duration) {
+                    videoIndex = i;
+                    videoTimeOffset = currentPlaylistOffset;
+                    break;
+                }
+                currentPlaylistOffset -= playlist[i].duration;
+            }
+
+            if (player.getAttribute('data-index') !== String(videoIndex)) {
+                player.setAttribute('data-index', videoIndex);
+                player.src = playlist[videoIndex].url;
+                player.load();
+                player.addEventListener('loadedmetadata', function onMetadata() {
+                    player.currentTime = videoTimeOffset;
+                    player.play().catch(e => console.log("Нужен клик для звука"));
+                    player.removeEventListener('loadedmetadata', onMetadata);
+                });
+            } else {
+                if (player.ended || Math.abs(player.currentTime - videoTimeOffset) > 2) {
+                    player.currentTime = videoTimeOffset;
+                    player.play();
+                }
+            }
+        }
+
+        function forceSyncTime() {
+            const currentUnixTime = Math.floor(Date.now() / 1000);
+            let currentPlaylistOffset = currentUnixTime % totalDuration;
+            const currentIndex = parseInt(player.getAttribute('data-index') || 0);
+            for (let i = 0; i < currentIndex; i) { currentPlaylistOffset -= playlist[i].duration; }
+            if (Math.abs(player.currentTime - currentPlaylistOffset) > 2) { player.currentTime = currentPlaylistOffset; }
+        }
+
+        window.addEventListener('load', syncTV);
+        player.addEventListener('ended', syncTV);
+        player.addEventListener('seeking', forceSyncTime);
+        setInterval(forceSyncTime, 10000);
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.body.addEventListener('click', () => { player.muted = false; });
+    </script>
+</body>
+</html>
