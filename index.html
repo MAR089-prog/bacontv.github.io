@@ -15,7 +15,7 @@
             height: 100%;
             background-color: #000;
             overflow: hidden;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .tv-container {
@@ -29,14 +29,23 @@
             user-select: none;
         }
 
-        video {
+        video, iframe, #yt-player {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             z-index: 1;
+            transition: opacity 0.3s ease;
+            border: none;
         }
 
-        /* Эффект стеклянного оверлея по краям */
+        .hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         .tv-overlay {
             position: absolute;
             top: 0;
@@ -48,7 +57,6 @@
             pointer-events: none;
         }
 
-        /* СТИЛЬНЫЙ ЛОГОТИП */
         .tv-logo {
             position: absolute;
             top: 20px;
@@ -56,7 +64,7 @@
             display: flex;
             align-items: center;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px); /* Размытие заднего фона — тренд! */
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             padding: 10px 18px;
             border-radius: 12px;
@@ -81,7 +89,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* LIVE ПЛАШКА С НЕОНОМ */
         .tv-live-badge {
             position: absolute;
             top: 25px;
@@ -105,7 +112,6 @@
             100% { box-shadow: 0 0 8px #ff0055; }
         }
 
-        /* СОВРЕМЕННЫЕ ЧАСЫ */
         .tv-clocks {
             position: absolute;
             bottom: 65px;
@@ -137,7 +143,6 @@
             font-weight: 900;
         }
 
-        /* БЕГУЩАЯ СТРОКА БЕЗ ШВОВ И СТЫКОВ */
         .news-ticker {
             position: absolute;
             bottom: 0;
@@ -175,7 +180,6 @@
             display: flex;
         }
 
-        /* Бесшовное движение двух одинаковых блоков */
         .ticker-move {
             display: flex;
             white-space: nowrap;
@@ -186,15 +190,14 @@
             color: #fff;
             font-size: 18px;
             font-weight: 500;
-            padding-right: 50px; /* Отступ между повторами */
+            padding-right: 50px;
         }
 
         @keyframes ticker-loop {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Сдвиг ровно на половину общей длины двух блоков */
+            100% { transform: translateX(-50%); }
         }
 
-        /* КРАСИВЫЙ ИНДИКАТОР ЗАГРУЗКИ */
         .tv-loader {
             position: absolute;
             z-index: 2;
@@ -206,6 +209,7 @@
             align-items: center;
             gap: 15px;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
         .spinner {
             width: 40px;
@@ -219,7 +223,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ПОДСКАЗКА ПРО ЗВУК */
         .audio-prompt {
             position: absolute;
             top: 85px;
@@ -252,6 +255,7 @@
         <div class="audio-prompt" id="audio-prompt">Включить звук 🔊</div>
 
         <video id="tv-player" autoplay muted playsinline></video>
+        <div id="yt-player" class="hidden"></div>
         <div class="tv-overlay"></div>
 
         <div class="tv-logo">
@@ -271,19 +275,21 @@
             <div class="ticker-wrap">
                 <div class="ticker-move" id="ticker-content">
                     <div class="ticker-text" id="ticker-raw-text">
-                        🔥 Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • • 🛡️ БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • • 🤖 НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • • 🚀 ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • • 🥓 БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
+                         Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • •  БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • •  НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • •  ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • •  БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
         const playlist = [
-            { url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
-            { url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
-            { url: "https://files.catbox.moe/ju8cdr.mp4", duration: 1055 },
-            { url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }, 
+            { type: "html5", url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
+            { type: "html5", url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
+            { type: "youtube", id: "6_LNBaATaXg", duration: 831 }, 
+            { type: "html5", url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }
         ];
 
         const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
@@ -292,16 +298,22 @@
         const loader = document.getElementById('tv-loader');
         const audioPrompt = document.getElementById('audio-prompt');
 
-        // Клонируем текст бегущей строки для создания 100% бесшовного зацикливания
+        let ytPlayer;
+        let ytReady = false;
+        let isMuted = true;
+        let currentLoadedIndex = -1;
+
         const rawTextNode = document.getElementById('ticker-raw-text');
         const tickerContent = document.getElementById('ticker-content');
         tickerContent.appendChild(rawTextNode.cloneNode(true));
 
-        // Управление спиннером загрузки видео
-        player.addEventListener('waiting', () => { loader.style.opacity = '1'; });
+        player.addEventListener('waiting', () => {
+            if (playlist[currentLoadedIndex] && playlist[currentLoadedIndex].type === 'html5') {
+                loader.style.opacity = '1';
+            }
+        });
         player.addEventListener('playing', () => { loader.style.opacity = '0'; });
 
-        // Синхронизация системных часов
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -311,7 +323,39 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // Главный мозг синхронизации псевдо-стрима
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('yt-player', {
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'iv_load_policy': 3,
+                    'mute': 1
+                },
+                events: {
+                    'onReady': () => {
+                        ytReady = true;
+                        syncTV();
+                    },
+                    'onStateChange': (event) => {
+                        if (playlist[currentLoadedIndex] && playlist[currentLoadedIndex].type === 'youtube') {
+                            if (event.data === YT.PlayerState.BUFFERING) {
+                                loader.style.opacity = '1';
+                            } else {
+                                loader.style.opacity = '0';
+                            }
+                        }
+                        if (event.data === YT.PlayerState.ENDED) {
+                            setTimeout(syncTV, 100);
+                        }
+                    }
+                }
+            });
+        }
+
         function syncTV() {
             if (playlist.length === 0) return;
             
@@ -330,31 +374,64 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            const activeIndex = player.getAttribute('data-index');
+            const currentItem = playlist[videoIndex];
 
-            if (activeIndex !== String(videoIndex)) {
+            if (currentLoadedIndex !== videoIndex) {
+                currentLoadedIndex = videoIndex;
                 loader.style.opacity = '1';
-                player.setAttribute('data-index', videoIndex);
-                player.src = playlist[videoIndex].url;
-                player.load();
-                
-                player.onloadedmetadata = () => {
-                    player.currentTime = videoTimeOffset;
-                    player.play().catch(e => console.log("Ждем клика от братишки для активации звука"));
-                };
-            } else {
-                if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
-                    player.currentTime = videoTimeOffset;
+
+                if (currentItem.type === 'html5') {
+                    if (ytReady && ytPlayer && ytPlayer.pauseVideo) {
+                        ytPlayer.pauseVideo();
+                    }
+                    const ytElem = document.getElementById('yt-player');
+                    if (ytElem) ytElem.classList.add('hidden');
+                    player.classList.remove('hidden');
+
+                    player.setAttribute('data-index', videoIndex);
+                    player.src = currentItem.url;
+                    player.load();
+                    
+                    player.onloadedmetadata = () => {
+                        player.currentTime = videoTimeOffset;
+                        player.play().catch(() => {});
+                    };
+                } else if (currentItem.type === 'youtube') {
+                    player.pause();
+                    player.classList.add('hidden');
+                    const ytElem = document.getElementById('yt-player');
+                    if (ytElem) ytElem.classList.remove('hidden');
+
+                    if (ytReady && ytPlayer && ytPlayer.loadVideoById) {
+                        ytPlayer.loadVideoById({
+                            videoId: currentItem.id,
+                            startSeconds: videoTimeOffset
+                        });
+                        if (!isMuted) {
+                            ytPlayer.unMute();
+                            ytPlayer.setVolume(100);
+                        }
+                    }
                 }
-                if (player.paused) {
-                    player.play().catch(() => {});
+            } else {
+                if (currentItem.type === 'html5') {
+                    if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
+                        player.currentTime = videoTimeOffset;
+                    }
+                    if (player.paused) {
+                        player.play().catch(() => {});
+                    }
+                } else if (currentItem.type === 'youtube' && ytReady && ytPlayer && ytPlayer.getCurrentTime) {
+                    const playerTime = ytPlayer.getCurrentTime();
+                    if (Math.abs(playerTime - videoTimeOffset) > 3) {
+                        ytPlayer.seekTo(videoTimeOffset, true);
+                    }
                 }
             }
         }
 
-        // Мягкая фоновая проверка каждую пятилетку (5 секунд)
         function checkSync() {
-            if (playlist.length === 0 || player.readyState < 2) return;
+            if (playlist.length === 0) return;
             
             const currentUnixTime = Math.floor(Date.now() / 1000);
             let currentPlaylistOffset = currentUnixTime % totalDuration;
@@ -368,31 +445,39 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            if (player.getAttribute('data-index') !== String(videoIndex)) {
+            if (currentLoadedIndex !== videoIndex) {
                 syncTV();
-            } else if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
-                player.currentTime = currentPlaylistOffset;
+            } else {
+                const currentItem = playlist[videoIndex];
+                if (currentItem.type === 'html5' && player.readyState >= 2) {
+                    if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
+                        player.currentTime = currentPlaylistOffset;
+                    }
+                } else if (currentItem.type === 'youtube' && ytReady && ytPlayer && ytPlayer.getCurrentTime) {
+                    const playerTime = ytPlayer.getCurrentTime();
+                    if (Math.abs(playerTime - currentPlaylistOffset) > 4) {
+                        ytPlayer.seekTo(currentPlaylistOffset, true);
+                    }
+                }
             }
         }
 
-        // Инициализация
         window.addEventListener('load', syncTV);
-        
-        player.addEventListener('ended', () => {
-            setTimeout(syncTV, 100);
-        });
-
+        player.addEventListener('ended', () => { setTimeout(syncTV, 100); });
         setInterval(checkSync, 5000);
         document.addEventListener('contextmenu', event => event.preventDefault());
         
-        // Включение звука по клику + скрытие подсказки
         container.addEventListener('click', () => { 
+            isMuted = false;
             if (player.muted) {
                 player.muted = false;
-                audioPrompt.style.opacity = '0';
-                setTimeout(() => audioPrompt.remove(), 500); // Удаляем из DOM после исчезновения
-                console.log("Звук на Бекон ТВ успешно подрублен!");
             }
+            if (ytReady && ytPlayer && ytPlayer.isMuted && ytPlayer.isMuted()) {
+                ytPlayer.unMute();
+                ytPlayer.setVolume(100);
+            }
+            audioPrompt.style.opacity = '0';
+            setTimeout(() => audioPrompt.remove(), 500);
         });
     </script>
 </body>
