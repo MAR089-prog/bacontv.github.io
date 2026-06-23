@@ -15,7 +15,7 @@
             height: 100%;
             background-color: #000;
             overflow: hidden;
-            font-family: 'Arial', sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         .tv-container {
@@ -25,7 +25,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer; /* Братан, добавил курсор, чтобы было понятно, что надо кликнуть для звука */
+            cursor: pointer;
+            user-select: none;
         }
 
         video {
@@ -35,138 +36,221 @@
             z-index: 1;
         }
 
+        /* Эффект стеклянного оверлея по краям */
         .tv-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: transparent;
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
             z-index: 2;
+            pointer-events: none;
         }
 
-        /* ЛОГОТИП */
+        /* СТИЛЬНЫЙ ЛОГОТИП */
         .tv-logo {
             position: absolute;
             top: 20px;
             left: 20px;
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 15px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px); /* Размытие заднего фона — тренд! */
+            -webkit-backdrop-filter: blur(8px);
+            padding: 10px 18px;
+            border-radius: 12px;
             pointer-events: none;
-            user-select: none;
             z-index: 3;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tv-logo img {
-            width: 50px;
-            height: 50px;
-            margin-right: 10px;
+            width: 45px;
+            height: 45px;
+            margin-right: 12px;
             border-radius: 50%;
+            border: 2px solid #ff0055;
         }
 
         .tv-logo-text {
             color: #fff;
             font-size: 20px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* LIVE ПЛАШКА */
+        /* LIVE ПЛАШКА С НЕОНОМ */
         .tv-live-badge {
             position: absolute;
             top: 25px;
             right: 25px;
-            background-color: #ff0000;
+            background-color: #ff0055;
             color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 6px 16px;
             border-radius: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             z-index: 3;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+            box-shadow: 0 0 15px #ff0055;
+            animation: pulse 2s infinite;
         }
 
-        /* ЧАСЫ (над бегущей строкой) */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 8px #ff0055; }
+            50% { box-shadow: 0 0 20px #ff0055; }
+            100% { box-shadow: 0 0 8px #ff0055; }
+        }
+
+        /* СОВРЕМЕННЫЕ ЧАСЫ */
         .tv-clocks {
             position: absolute;
-            bottom: 60px;
+            bottom: 65px;
             left: 20px;
             color: #fff;
             background: rgba(0, 0, 0, 0.6);
-            padding: 10px 15px;
-            border-radius: 8px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 12px 18px;
+            border-radius: 12px;
             z-index: 3;
-            font-weight: bold;
-            border-left: 4px solid #ff0000;
+            font-weight: 700;
+            border-left: 4px solid #ff0055;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .clock-item {
-            font-size: 18px;
+            font-size: 16px;
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .clock-item:last-child { margin-bottom: 0; }
 
         .clock-item span {
-            color: #00ff00;
+            color: #00ffaa;
             font-family: 'Courier New', monospace;
+            font-weight: 900;
         }
 
-        /* БЕГУЩАЯ СТРОКА */
+        /* БЕГУЩАЯ СТРОКА БЕЗ ШВОВ И СТЫКОВ */
         .news-ticker {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 45px;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             z-index: 4;
             overflow: hidden;
-            border-top: 2px solid #ff0000;
+            border-top: 2px solid #ff0055;
         }
 
         .ticker-title {
-            background: #ff0000;
+            background: #ff0055;
             color: #fff;
-            padding: 0 20px;
+            padding: 0 24px;
             height: 100%;
             display: flex;
             align-items: center;
-            font-weight: bold;
-            font-size: 14px;
+            font-weight: 900;
+            font-size: 13px;
             white-space: nowrap;
             z-index: 5;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
         }
 
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
+            display: flex;
         }
 
+        /* Бесшовное движение двух одинаковых блоков */
         .ticker-move {
-            display: inline-block;
+            display: flex;
             white-space: nowrap;
-            color: #fff;
-            font-size: 20px;
-            padding-left: 100%;
-            animation: ticker 30s linear infinite;
+            animation: ticker-loop 40s linear infinite;
         }
 
-        @keyframes ticker {
+        .ticker-text {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 500;
+            padding-right: 50px; /* Отступ между повторами */
+        }
+
+        @keyframes ticker-loop {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+            100% { transform: translateX(-50%); } /* Сдвиг ровно на половину общей длины двух блоков */
+        }
+
+        /* КРАСИВЫЙ ИНДИКАТОР ЗАГРУЗКИ */
+        .tv-loader {
+            position: absolute;
+            z-index: 2;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            transition: opacity 0.3s ease;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ff0055;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ПОДСКАЗКА ПРО ЗВУК */
+        .audio-prompt {
+            position: absolute;
+            top: 85px;
+            right: 25px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 3;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: bounce 2s infinite;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
     </style>
 </head>
 <body>
 
     <div class="tv-container" id="main-container">
+        <div class="tv-loader" id="tv-loader">
+            <div class="spinner"></div>
+            <div>ПОДКЛЮЧЕНИЕ К ЭФИРУ...</div>
+        </div>
+
+        <div class="audio-prompt" id="audio-prompt">Включить звук 🔊</div>
+
         <video id="tv-player" autoplay muted playsinline></video>
         <div class="tv-overlay"></div>
 
@@ -185,8 +269,10 @@
         <div class="news-ticker">
             <div class="ticker-title">СРОЧНЫЕ НОВОСТИ</div>
             <div class="ticker-wrap">
-                <div class="ticker-move">
-                    🔥 Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • • 🛡️ БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • • 🤖 НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • • 🚀 ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • • 🥓 БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
+                <div class="ticker-move" id="ticker-content">
+                    <div class="ticker-text" id="ticker-raw-text">
+                        🔥 Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • • 🛡️ БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • • 🤖 НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • • 🚀 ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • • 🥓 БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,8 +289,19 @@
         const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
         const player = document.getElementById('tv-player');
         const container = document.getElementById('main-container');
+        const loader = document.getElementById('tv-loader');
+        const audioPrompt = document.getElementById('audio-prompt');
 
-        // Часики тикают ровно
+        // Клонируем текст бегущей строки для создания 100% бесшовного зацикливания
+        const rawTextNode = document.getElementById('ticker-raw-text');
+        const tickerContent = document.getElementById('ticker-content');
+        tickerContent.appendChild(rawTextNode.cloneNode(true));
+
+        // Управление спиннером загрузки видео
+        player.addEventListener('waiting', () => { loader.style.opacity = '1'; });
+        player.addEventListener('playing', () => { loader.style.opacity = '0'; });
+
+        // Синхронизация системных часов
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -214,7 +311,7 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        // Главная функция синхронизации эфира
+        // Главный мозг синхронизации псевдо-стрима
         function syncTV() {
             if (playlist.length === 0) return;
             
@@ -235,30 +332,27 @@
 
             const activeIndex = player.getAttribute('data-index');
 
-            // Если крутится другое видео или вообще ничего не загружено
             if (activeIndex !== String(videoIndex)) {
+                loader.style.opacity = '1';
                 player.setAttribute('data-index', videoIndex);
                 player.src = playlist[videoIndex].url;
                 player.load();
                 
-                // Перемотку делаем строго после того, как браузер узнает длину видео
                 player.onloadedmetadata = () => {
                     player.currentTime = videoTimeOffset;
-                    player.play().catch(e => console.log("Братан, кликни по экрану, чтобы включить звук!"));
+                    player.play().catch(e => console.log("Ждем клика от братишки для активации звука"));
                 };
             } else {
-                // Если видос тот же, но время дико рассинхронизировалось (больше 3 секунд)
                 if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
                     player.currentTime = videoTimeOffset;
                 }
-                // На всякий пожарный пнем плеер, если он встал
                 if (player.paused) {
                     player.play().catch(() => {});
                 }
             }
         }
 
-        // Мягкая проверка рассинхрона (раз в 5 секунд)
+        // Мягкая фоновая проверка каждую пятилетку (5 секунд)
         function checkSync() {
             if (playlist.length === 0 || player.readyState < 2) return;
             
@@ -274,34 +368,30 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            // Если видос по времени уже должен быть ДРУГИМ — запускаем полную синхронизацию
             if (player.getAttribute('data-index') !== String(videoIndex)) {
                 syncTV();
             } else if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
-                // Если видео то же, но отстает/спешит
                 player.currentTime = currentPlaylistOffset;
             }
         }
 
-        // Слушатели событий
+        // Инициализация
         window.addEventListener('load', syncTV);
         
-        // Когда видос кончается, не просто вызываем syncTV, а даем микро-паузу, чтоб браузер не тупил
         player.addEventListener('ended', () => {
             setTimeout(syncTV, 100);
         });
 
-        // Каждые 5 секунд чекаем, идет ли эфир в ногу со временем
         setInterval(checkSync, 5000);
-
-        // Блокируем контекстное меню (как у тебя)
         document.addEventListener('contextmenu', event => event.preventDefault());
         
-        // Включение звука по клику на весь экран
+        // Включение звука по клику + скрытие подсказки
         container.addEventListener('click', () => { 
             if (player.muted) {
                 player.muted = false;
-                console.log("Звук врублен на полную!");
+                audioPrompt.style.opacity = '0';
+                setTimeout(() => audioPrompt.remove(), 500); // Удаляем из DOM после исчезновения
+                console.log("Звук на Бекон ТВ успешно подрублен!");
             }
         });
     </script>
