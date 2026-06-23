@@ -25,6 +25,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer; /* Братан, добавил курсор, чтобы было понятно, что надо кликнуть для звука */
         }
 
         video {
@@ -93,7 +94,7 @@
         /* ЧАСЫ (над бегущей строкой) */
         .tv-clocks {
             position: absolute;
-            bottom: 60px; /* Чуть выше, чтобы не перекрывать строку */
+            bottom: 60px;
             left: 20px;
             color: #fff;
             background: rgba(0, 0, 0, 0.6);
@@ -165,7 +166,7 @@
 </head>
 <body>
 
-    <div class="tv-container">
+    <div class="tv-container" id="main-container">
         <video id="tv-player" autoplay muted playsinline></video>
         <div class="tv-overlay"></div>
 
@@ -201,7 +202,9 @@
 
         const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
         const player = document.getElementById('tv-player');
+        const container = document.getElementById('main-container');
 
+        // Часики тикают ровно
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -211,10 +214,13 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
+        // Главная функция синхронизации эфира
         function syncTV() {
             if (playlist.length === 0) return;
+            
             const currentUnixTime = Math.floor(Date.now() / 1000);
             let currentPlaylistOffset = currentUnixTime % totalDuration;
+            
             let videoIndex = 0;
             let videoTimeOffset = 0;
 
@@ -227,43 +233,77 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            if (player.getAttribute('data-index') !== String(videoIndex)) {
+            const activeIndex = player.getAttribute('data-index');
+
+            // Если крутится другое видео или вообще ничего не загружено
+            if (activeIndex !== String(videoIndex)) {
                 player.setAttribute('data-index', videoIndex);
                 player.src = playlist[videoIndex].url;
                 player.load();
-                player.addEventListener('loadedmetadata', function onMetadata() {
+                
+                // Перемотку делаем строго после того, как браузер узнает длину видео
+                player.onloadedmetadata = () => {
                     player.currentTime = videoTimeOffset;
-                    player.play().catch(e => console.log("Нужен клик для звука"));
-                    player.removeEventListener('loadedmetadata', onMetadata);
-                });
+                    player.play().catch(e => console.log("Братан, кликни по экрану, чтобы включить звук!"));
+                };
             } else {
-                if (player.ended || Math.abs(player.currentTime - videoTimeOffset) > 2) {
+                // Если видос тот же, но время дико рассинхронизировалось (больше 3 секунд)
+                if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
                     player.currentTime = videoTimeOffset;
-                    player.play();
+                }
+                // На всякий пожарный пнем плеер, если он встал
+                if (player.paused) {
+                    player.play().catch(() => {});
                 }
             }
         }
 
-        function forceSyncTime() {
-            if (playlist.length === 0) return;
+        // Мягкая проверка рассинхрона (раз в 5 секунд)
+        function checkSync() {
+            if (playlist.length === 0 || player.readyState < 2) return;
+            
             const currentUnixTime = Math.floor(Date.now() / 1000);
             let currentPlaylistOffset = currentUnixTime % totalDuration;
-            const currentIndex = parseInt(player.getAttribute('data-index') || 0);
             
-            for (let i = 0; i < currentIndex; i++) { 
-                currentPlaylistOffset -= playlist[i].duration; 
+            let videoIndex = 0;
+            for (let i = 0; i < playlist.length; i++) {
+                if (currentPlaylistOffset < playlist[i].duration) {
+                    videoIndex = i;
+                    break;
+                }
+                currentPlaylistOffset -= playlist[i].duration;
             }
-            if (Math.abs(player.currentTime - currentPlaylistOffset) > 2) { 
-                player.currentTime = currentPlaylistOffset; 
+
+            // Если видос по времени уже должен быть ДРУГИМ — запускаем полную синхронизацию
+            if (player.getAttribute('data-index') !== String(videoIndex)) {
+                syncTV();
+            } else if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
+                // Если видео то же, но отстает/спешит
+                player.currentTime = currentPlaylistOffset;
             }
         }
 
+        // Слушатели событий
         window.addEventListener('load', syncTV);
-        player.addEventListener('ended', syncTV);
-        player.addEventListener('seeking', forceSyncTime);
-        setInterval(forceSyncTime, 10000);
+        
+        // Когда видос кончается, не просто вызываем syncTV, а даем микро-паузу, чтоб браузер не тупил
+        player.addEventListener('ended', () => {
+            setTimeout(syncTV, 100);
+        });
+
+        // Каждые 5 секунд чекаем, идет ли эфир в ногу со временем
+        setInterval(checkSync, 5000);
+
+        // Блокируем контекстное меню (как у тебя)
         document.addEventListener('contextmenu', event => event.preventDefault());
-        document.body.addEventListener('click', () => { player.muted = false; });
+        
+        // Включение звука по клику на весь экран
+        container.addEventListener('click', () => { 
+            if (player.muted) {
+                player.muted = false;
+                console.log("Звук врублен на полную!");
+            }
+        });
     </script>
 </body>
 </html>
