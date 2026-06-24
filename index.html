@@ -192,118 +192,104 @@
         </div>
     </div>
 
-    <script>
-        const playlist = [
-            { url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
-            { url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
-            { url: "https://files.catbox.moe/ju8cdr.mp4", duration: 1055 },
-            { url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }, 
-        ];
+   <script>
+    const playlist = [
+        { url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
+        { url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
+        { url: "https://files.catbox.moe/ju8cdr.mp4", duration: 1055 },
+        { url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }
+    ];
 
-        const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
-        const player = document.getElementById('tv-player');
-        const container = document.getElementById('main-container');
+    const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
+    const player = document.getElementById('tv-player');
+    const container = document.getElementById('main-container');
 
-        
-        function updateClocks() {
-            const now = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            document.getElementById('msk-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Moscow' }).format(now);
-            document.getElementById('samara-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Samara' }).format(now);
-        }
-        setInterval(updateClocks, 1000);
-        updateClocks();
+    function updateClocks() {
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('msk-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Moscow' }).format(now);
+        document.getElementById('samara-time').textContent = new Intl.DateTimeFormat('ru-RU', { ...options, timeZone: 'Europe/Samara' }).format(now);
+    }
+    setInterval(updateClocks, 1000);
+    updateClocks();
 
-        
-        function syncTV() {
-            if (playlist.length === 0) return;
-            
-            const currentUnixTime = Math.floor(Date.now() / 1000);
-            let currentPlaylistOffset = currentUnixTime % totalDuration;
-            
-            let videoIndex = 0;
-            let videoTimeOffset = 0;
+    function syncTV() {
+        if (playlist.length === 0) return;
 
-            for (let i = 0; i < playlist.length; i++) {
-                if (currentPlaylistOffset < playlist[i].duration) {
-                    videoIndex = i;
-                    videoTimeOffset = currentPlaylistOffset;
-                    break;
-                }
-                currentPlaylistOffset -= playlist[i].duration;
+        const currentUnixTime = Math.floor(Date.now() / 1000);
+        let currentPlaylistOffset = currentUnixTime % totalDuration;
+        let videoIndex = 0;
+        let videoTimeOffset = 0;
+
+        for (let i = 0; i < playlist.length; i++) {
+            if (currentPlaylistOffset < playlist[i].duration) {
+                videoIndex = i;
+                videoTimeOffset = currentPlaylistOffset;
+                break;
             }
-
-            const activeIndex = player.getAttribute('data-index');
-
-            
-            if (activeIndex !== String(videoIndex)) {
-                player.setAttribute('data-index', videoIndex);
-                player.src = playlist[videoIndex].url;
-                player.load();
-                
-                
-                player.onloadedmetadata = () => {
-                    player.currentTime = videoTimeOffset;
-                    player.play().catch(e => console.log("Братан, кликни по экрану, чтобы включить звук!"));
-                };
-            } else {
-                
-                if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
-                    player.currentTime = videoTimeOffset;
-                }
-                
-                if (player.paused) {
-                    player.play().catch(() => {});
-                }
-            }
+            currentPlaylistOffset -= playlist[i].duration;
         }
 
-        
-        function checkSync() {
-            if (playlist.length === 0 || player.readyState < 2) return;
-            
-            const currentUnixTime = Math.floor(Date.now() / 1000);
-            let currentPlaylistOffset = currentUnixTime % totalDuration;
-            
-            let videoIndex = 0;
-            for (let i = 0; i < playlist.length; i++) {
-                if (currentPlaylistOffset < playlist[i].duration) {
-                    videoIndex = i;
-                    break;
-                }
-                currentPlaylistOffset -= playlist[i].duration;
-            }
+        const currentIndex = player.getAttribute('data-index');
 
-           
-            if (player.getAttribute('data-index') !== String(videoIndex)) {
-                syncTV();
-            } else if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
-                
-                player.currentTime = currentPlaylistOffset;
+        if (currentIndex !== String(videoIndex)) {
+            player.setAttribute('data-index', videoIndex);
+            player.src = playlist[videoIndex].url;
+            player.load();
+
+            player.onloadedmetadata = () => {
+                player.currentTime = videoTimeOffset;
+                player.play().catch(() => {
+                    console.log("Братан, кликни по экрану, чтобы включить звук");
+                });
+            };
+        } else {
+            if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
+                player.currentTime = videoTimeOffset;
+            }
+            if (player.paused) {
+                player.play().catch(() => {});
             }
         }
+    }
 
-        
-        window.addEventListener('load', syncTV);
-        
-      
-        player.addEventListener('ended', () => {
-            setTimeout(syncTV, 100);
-        });
+    function checkSync() {
+        if (playlist.length === 0 || !player.readyState) return;
 
-      
-        setInterval(checkSync, 5000);
+        const currentUnixTime = Math.floor(Date.now() / 1000);
+        let currentPlaylistOffset = currentUnixTime % totalDuration;
+        let videoIndex = 0;
 
-        
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        
-       
-        container.addEventListener('click', () => { 
-            if (player.muted) {
-                player.muted = false;
-                console.log("Звук включен");
+        for (let i = 0; i < playlist.length; i++) {
+            if (currentPlaylistOffset < playlist[i].duration) {
+                videoIndex = i;
+                break;
             }
-        });
-    </script>
+            currentPlaylistOffset -= playlist[i].duration;
+        }
+
+        const currentIndex = player.getAttribute('data-index');
+        if (currentIndex !== String(videoIndex)) {
+            syncTV();
+        } else {
+            const expectedTime = currentPlaylistOffset;
+            if (Math.abs(player.currentTime - expectedTime) > 4) {
+                player.currentTime = expectedTime;
+            }
+        }
+    }
+
+    window.addEventListener('load', syncTV);
+    player.addEventListener('ended', () => setTimeout(syncTV, 100));
+    setInterval(checkSync, 5000);
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    container.addEventListener('click', () => {
+        if (player.muted) {
+            player.muted = false;
+            console.log("Звук включен");
+        }
+    });
+</script>
 </body>
 </html>
