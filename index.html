@@ -15,7 +15,7 @@
             height: 100%;
             background-color: #000;
             overflow: hidden;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Arial', sans-serif;
         }
 
         .tv-container {
@@ -25,25 +25,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            user-select: none;
+            cursor: pointer; 
         }
 
-        video, iframe, #yt-player {
-            position: absolute;
-            top: 0;
-            left: 0;
+        video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             z-index: 1;
-            transition: opacity 0.3s ease;
-            border: none;
-        }
-
-        .hidden {
-            opacity: 0 !important;
-            pointer-events: none !important;
         }
 
         .tv-overlay {
@@ -52,210 +41,133 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
+            background: transparent;
             z-index: 2;
-            pointer-events: none;
         }
 
+        
         .tv-logo {
             position: absolute;
             top: 20px;
             left: 20px;
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 10px 18px;
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 8px;
             pointer-events: none;
+            user-select: none;
             z-index: 3;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .tv-logo img {
-            width: 45px;
-            height: 45px;
-            margin-right: 12px;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
             border-radius: 50%;
-            border: 2px solid #ff0055;
         }
 
         .tv-logo-text {
             color: #fff;
             font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
+        
         .tv-live-badge {
             position: absolute;
             top: 25px;
             right: 25px;
-            background-color: #ff0055;
+            background-color: #ff0000;
             color: #ffffff;
-            font-size: 14px;
-            font-weight: 900;
-            padding: 6px 16px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 6px 14px;
             border-radius: 6px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             z-index: 3;
-            box-shadow: 0 0 15px #ff0055;
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 8px #ff0055; }
-            50% { box-shadow: 0 0 20px #ff0055; }
-            100% { box-shadow: 0 0 8px #ff0055; }
-        }
-
+       
         .tv-clocks {
             position: absolute;
-            bottom: 65px;
+            bottom: 60px;
             left: 20px;
             color: #fff;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 12px 18px;
-            border-radius: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
             z-index: 3;
-            font-weight: 700;
-            border-left: 4px solid #ff0055;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            border-left: 4px solid #ff0000;
         }
 
         .clock-item {
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        .clock-item:last-child { margin-bottom: 0; }
 
         .clock-item span {
-            color: #00ffaa;
+            color: #00ff00;
             font-family: 'Courier New', monospace;
-            font-weight: 900;
         }
 
+        /* БЕГУЩАЯ СТРОКА */
         .news-ticker {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 45px;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             align-items: center;
             z-index: 4;
             overflow: hidden;
-            border-top: 2px solid #ff0055;
+            border-top: 2px solid #ff0000;
         }
 
         .ticker-title {
-            background: #ff0055;
+            background: #ff0000;
             color: #fff;
-            padding: 0 24px;
+            padding: 0 20px;
             height: 100%;
             display: flex;
             align-items: center;
-            font-weight: 900;
-            font-size: 13px;
+            font-weight: bold;
+            font-size: 14px;
             white-space: nowrap;
             z-index: 5;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
         }
 
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
-            display: flex;
         }
 
         .ticker-move {
-            display: flex;
+            display: inline-block;
             white-space: nowrap;
-            animation: ticker-loop 40s linear infinite;
-        }
-
-        .ticker-text {
             color: #fff;
-            font-size: 18px;
-            font-weight: 500;
-            padding-right: 50px;
+            font-size: 20px;
+            padding-left: 100%;
+            animation: ticker 30s linear infinite;
         }
 
-        @keyframes ticker-loop {
+        @keyframes ticker {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .tv-loader {
-            position: absolute;
-            z-index: 2;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #ff0055;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .audio-prompt {
-            position: absolute;
-            top: 85px;
-            right: 25px;
-            background: rgba(0,0,0,0.8);
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            z-index: 3;
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: bounce 2s infinite;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            100% { transform: translateX(-100%); }
         }
     </style>
 </head>
 <body>
 
     <div class="tv-container" id="main-container">
-        <div class="tv-loader" id="tv-loader">
-            <div class="spinner"></div>
-            <div>ПОДКЛЮЧЕНИЕ К ЭФИРУ...</div>
-        </div>
-
-        <div class="audio-prompt" id="audio-prompt">Включить звук 🔊</div>
-
         <video id="tv-player" autoplay muted playsinline></video>
-        <div id="yt-player" class="hidden"></div>
         <div class="tv-overlay"></div>
 
         <div class="tv-logo">
@@ -273,47 +185,26 @@
         <div class="news-ticker">
             <div class="ticker-title">СРОЧНЫЕ НОВОСТИ</div>
             <div class="ticker-wrap">
-                <div class="ticker-move" id="ticker-content">
-                    <div class="ticker-text" id="ticker-raw-text">
-                         Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • •  БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • •  НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • •  ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • •  БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
-                    </div>
+                <div class="ticker-move">
+                    🔥 Роскомнадзор полностью разблокировал Roblox в России — играем без VPN и лагов! • • • 🛡️ БЕЗОПАСНОСТЬ: Вводится система аккаунтов Roblox Kids для защиты младших игроков • • • 🤖 НЕЙРОСЕТИ: В Roblox Studio добавили ИИ, который создаёт 3D-модели прямо по тексту! • • • 🚀 ХАЙП: Новый секретный шутер в Роблокс набрал 4 миллиона онлайна за 24 часа • • • 🥓 БЕКОН ТВ: Главный телеканал всех бекончиков приветствует зрителей! Не переключайте канал! • • •
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
         const playlist = [
-            { type: "html5", url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
-            { type: "html5", url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
-            { type: "youtube", id: "6_LNBaATaXg", duration: 831 }, 
-            { type: "html5", url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }
+            { url: "https://files.catbox.moe/wo5na7.mp4", duration: 1652 },
+            { url: "https://files.catbox.moe/bgh3lw.mp4", duration: 450 }, 
+            { url: "https://files.catbox.moe/ju8cdr.mp4", duration: 1055 },
+            { url: "https://files.catbox.moe/nvxfft.mp4", duration: 650 }, 
         ];
 
         const totalDuration = playlist.reduce((sum, video) => sum + video.duration, 0);
         const player = document.getElementById('tv-player');
         const container = document.getElementById('main-container');
-        const loader = document.getElementById('tv-loader');
-        const audioPrompt = document.getElementById('audio-prompt');
 
-        let ytPlayer;
-        let ytReady = false;
-        let isMuted = true;
-        let currentLoadedIndex = -1;
-
-        const rawTextNode = document.getElementById('ticker-raw-text');
-        const tickerContent = document.getElementById('ticker-content');
-        tickerContent.appendChild(rawTextNode.cloneNode(true));
-
-        player.addEventListener('waiting', () => {
-            if (playlist[currentLoadedIndex] && playlist[currentLoadedIndex].type === 'html5') {
-                loader.style.opacity = '1';
-            }
-        });
-        player.addEventListener('playing', () => { loader.style.opacity = '0'; });
-
+        
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -323,39 +214,7 @@
         setInterval(updateClocks, 1000);
         updateClocks();
 
-        function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('yt-player', {
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'fs': 0,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'iv_load_policy': 3,
-                    'mute': 1
-                },
-                events: {
-                    'onReady': () => {
-                        ytReady = true;
-                        syncTV();
-                    },
-                    'onStateChange': (event) => {
-                        if (playlist[currentLoadedIndex] && playlist[currentLoadedIndex].type === 'youtube') {
-                            if (event.data === YT.PlayerState.BUFFERING) {
-                                loader.style.opacity = '1';
-                            } else {
-                                loader.style.opacity = '0';
-                            }
-                        }
-                        if (event.data === YT.PlayerState.ENDED) {
-                            setTimeout(syncTV, 100);
-                        }
-                    }
-                }
-            });
-        }
-
+        
         function syncTV() {
             if (playlist.length === 0) return;
             
@@ -374,64 +233,34 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            const currentItem = playlist[videoIndex];
+            const activeIndex = player.getAttribute('data-index');
 
-            if (currentLoadedIndex !== videoIndex) {
-                currentLoadedIndex = videoIndex;
-                loader.style.opacity = '1';
-
-                if (currentItem.type === 'html5') {
-                    if (ytReady && ytPlayer && ytPlayer.pauseVideo) {
-                        ytPlayer.pauseVideo();
-                    }
-                    const ytElem = document.getElementById('yt-player');
-                    if (ytElem) ytElem.classList.add('hidden');
-                    player.classList.remove('hidden');
-
-                    player.setAttribute('data-index', videoIndex);
-                    player.src = currentItem.url;
-                    player.load();
-                    
-                    player.onloadedmetadata = () => {
-                        player.currentTime = videoTimeOffset;
-                        player.play().catch(() => {});
-                    };
-                } else if (currentItem.type === 'youtube') {
-                    player.pause();
-                    player.classList.add('hidden');
-                    const ytElem = document.getElementById('yt-player');
-                    if (ytElem) ytElem.classList.remove('hidden');
-
-                    if (ytReady && ytPlayer && ytPlayer.loadVideoById) {
-                        ytPlayer.loadVideoById({
-                            videoId: currentItem.id,
-                            startSeconds: videoTimeOffset
-                        });
-                        if (!isMuted) {
-                            ytPlayer.unMute();
-                            ytPlayer.setVolume(100);
-                        }
-                    }
-                }
+            
+            if (activeIndex !== String(videoIndex)) {
+                player.setAttribute('data-index', videoIndex);
+                player.src = playlist[videoIndex].url;
+                player.load();
+                
+                
+                player.onloadedmetadata = () => {
+                    player.currentTime = videoTimeOffset;
+                    player.play().catch(e => console.log("Братан, кликни по экрану, чтобы включить звук!"));
+                };
             } else {
-                if (currentItem.type === 'html5') {
-                    if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
-                        player.currentTime = videoTimeOffset;
-                    }
-                    if (player.paused) {
-                        player.play().catch(() => {});
-                    }
-                } else if (currentItem.type === 'youtube' && ytReady && ytPlayer && ytPlayer.getCurrentTime) {
-                    const playerTime = ytPlayer.getCurrentTime();
-                    if (Math.abs(playerTime - videoTimeOffset) > 3) {
-                        ytPlayer.seekTo(videoTimeOffset, true);
-                    }
+                
+                if (Math.abs(player.currentTime - videoTimeOffset) > 3) {
+                    player.currentTime = videoTimeOffset;
+                }
+                
+                if (player.paused) {
+                    player.play().catch(() => {});
                 }
             }
         }
 
+        
         function checkSync() {
-            if (playlist.length === 0) return;
+            if (playlist.length === 0 || player.readyState < 2) return;
             
             const currentUnixTime = Math.floor(Date.now() / 1000);
             let currentPlaylistOffset = currentUnixTime % totalDuration;
@@ -445,39 +274,35 @@
                 currentPlaylistOffset -= playlist[i].duration;
             }
 
-            if (currentLoadedIndex !== videoIndex) {
+           
+            if (player.getAttribute('data-index') !== String(videoIndex)) {
                 syncTV();
-            } else {
-                const currentItem = playlist[videoIndex];
-                if (currentItem.type === 'html5' && player.readyState >= 2) {
-                    if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
-                        player.currentTime = currentPlaylistOffset;
-                    }
-                } else if (currentItem.type === 'youtube' && ytReady && ytPlayer && ytPlayer.getCurrentTime) {
-                    const playerTime = ytPlayer.getCurrentTime();
-                    if (Math.abs(playerTime - currentPlaylistOffset) > 4) {
-                        ytPlayer.seekTo(currentPlaylistOffset, true);
-                    }
-                }
+            } else if (Math.abs(player.currentTime - currentPlaylistOffset) > 4) {
+                
+                player.currentTime = currentPlaylistOffset;
             }
         }
 
+        
         window.addEventListener('load', syncTV);
-        player.addEventListener('ended', () => { setTimeout(syncTV, 100); });
+        
+      
+        player.addEventListener('ended', () => {
+            setTimeout(syncTV, 100);
+        });
+
+      
         setInterval(checkSync, 5000);
+
+        
         document.addEventListener('contextmenu', event => event.preventDefault());
         
+       
         container.addEventListener('click', () => { 
-            isMuted = false;
             if (player.muted) {
                 player.muted = false;
+                console.log("Звук включен");
             }
-            if (ytReady && ytPlayer && ytPlayer.isMuted && ytPlayer.isMuted()) {
-                ytPlayer.unMute();
-                ytPlayer.setVolume(100);
-            }
-            audioPrompt.style.opacity = '0';
-            setTimeout(() => audioPrompt.remove(), 500);
         });
     </script>
 </body>
